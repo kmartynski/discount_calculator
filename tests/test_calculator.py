@@ -69,10 +69,12 @@ class TestBestDiscountSelection:
             PercentageDiscount(10, product_codes=["B"]),
         ]
         calc = DiscountCalculator(discounts)
-        result = calc.calculate([
-            make_item("A", 200, 1),   # 200 - 50 = 150
-            make_item("B", 1000, 1),  # 1000 - 100 = 900
-        ])
+        result = calc.calculate(
+            [
+                make_item("A", 200, 1),  # 200 - 50 = 150
+                make_item("B", 1000, 1),  # 1000 - 100 = 900
+            ]
+        )
         assert result == Money(1050, "EUR")
 
     def test_volume_beats_fixed_when_larger(self, make_item):
@@ -94,10 +96,12 @@ class TestEdgeCases:
     def test_mixed_currency_cart_raises(self, make_item):
         calc = DiscountCalculator([])
         with pytest.raises(ValueError, match="same currency"):
-            calc.calculate([
-                make_item("A", 100, 1, currency="EUR"),
-                make_item("B", 100, 1, currency="USD"),
-            ])
+            calc.calculate(
+                [
+                    make_item("A", 100, 1, currency="EUR"),
+                    make_item("B", 100, 1, currency="USD"),
+                ]
+            )
 
     def test_discount_capped_at_line_total_fixed(self, make_item):
         calc = DiscountCalculator([FixedDiscount(1000, "EUR")])
